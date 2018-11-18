@@ -21,9 +21,22 @@ class Particle:
 
         print (self.x)
 
+    def bounce(self):
+        if self.x > width - self.size:
+            self.x = 2 * (width - self.size) - self.x
+            self.angle = - self.angle
+        elif self.x < self.size:
+            self.x = 2 * self.size - self.x
+            self.angle = - self.angle
+        if self.y > height - self.size:
+            self.y = 2 * (height - self.size) - self.y
+            self.angle = math.pi - self.angle
+        elif self.y < self.size:
+            self.y = 2 * self.size - self.y
+            self.angle = math.pi - self.angle
 
 background_colour = (255,255,255)
-(width, height) = (300, 200)
+(width, height) = (500, 500)
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Tutorial 1')
 
@@ -50,6 +63,7 @@ while running:
   screen.fill(background_colour)
   for particle in my_particles:
     particle.move()
+    particle.bounce()
     particle.display()
 
   pygame.display.flip()

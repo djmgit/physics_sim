@@ -18,6 +18,7 @@ class Particle:
     def move(self):
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed
+        (self.angle, self.speed) = addVectors(self.angle, self.speed, gravity[0], gravity[1])
 
         print (self.x)
 
@@ -35,7 +36,18 @@ class Particle:
             self.y = 2 * self.size - self.y
             self.angle = math.pi - self.angle
 
+
+
+def addVectors(angle1, length1, angle2, length2):
+    x  = math.sin(angle1) * length1 + math.sin(angle2) * length2
+    y  = math.cos(angle1) * length1 + math.cos(angle2) * length2
+
+    length = math.hypot(x, y)
+    angle = 0.5 * math.pi - math.atan2(y, x)
+    return (angle, length)
+
 background_colour = (255,255,255)
+gravity = (math.pi, 0.002)
 (width, height) = (500, 500)
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Tutorial 1')

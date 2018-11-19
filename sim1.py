@@ -57,6 +57,14 @@ def findParticle(particles, x, y):
             return p
     return None
 
+def collide(p1, p2):
+    dx = p1.x - p2.x
+    dy = p1.y - p2.y        
+    distance = math.hypot(dx, dy)
+
+    if distance < p1.size + p2.size:
+        print ('Bang!')
+
 background_colour = (255,255,255)
 gravity = (math.pi, 0.002)
 drag = 0.999
@@ -100,11 +108,13 @@ while running:
         selected_particle = None
 
   screen.fill(background_colour)
-  for particle in my_particles:
-    #if particle != selected_particle:
-    particle.move()
-    particle.bounce()
-    particle.display()
+
+  for i, particle in enumerate(my_particles):
+      particle.move()
+      particle.bounce()
+      for particle2 in my_particles[i+1:]:
+          collide(particle, particle2)
+      particle.display()
 
   pygame.display.flip()
   

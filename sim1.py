@@ -21,7 +21,7 @@ class Particle:
         (self.angle, self.speed) = addVectors(self.angle, self.speed, gravity[0], gravity[1])
         self.speed *= drag
 
-        print (self.x)
+        #print (self.x)
 
     def bounce(self):
         if self.x > width - self.size:
@@ -51,6 +51,12 @@ def addVectors(angle1, length1, angle2, length2):
     angle = 0.5 * math.pi - math.atan2(y, x)
     return (angle, length)
 
+def findParticle(particles, x, y):
+    for p in particles:
+        if math.hypot(p.x-x, p.y-y) <= p.size:
+            return p
+    return None
+
 background_colour = (255,255,255)
 gravity = (math.pi, 0.002)
 drag = 0.999
@@ -74,13 +80,28 @@ for n in range(number_of_particles):
 
 
 running = True
-
+selected_particle = None
 while running:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running = False
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        (mouseX, mouseY) = pygame.mouse.get_pos()
+        print (mouseX, mouseY)
+        selected_particle = findParticle(my_particles, mouseX, mouseY)
+        print (selected_particle)
+        if selected_particle:
+            (mouseX, mouseY) = pygame.mouse.get_pos()
+            dx = mouseX - selected_particle.x
+            dy = mouseY - selected_particle.y
+            selected_particle.angle = math.atan2(dy, dx) + 0.5*math.pi
+            selected_particle.speed = math.hypot(dx, dy) * 0.1
+    elif event.type == pygame.MOUSEBUTTONUP:
+        selected_particle = None
+
   screen.fill(background_colour)
   for particle in my_particles:
+    #if particle != selected_particle:
     particle.move()
     particle.bounce()
     particle.display()

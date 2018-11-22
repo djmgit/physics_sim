@@ -81,7 +81,7 @@ drag = 0.999
 elasticity = 0.75
 (width, height) = (500, 500)
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Tutorial 1')
+pygame.display.set_caption('Physics simulation')
 
 
 number_of_particles = 3

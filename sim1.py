@@ -62,6 +62,16 @@ def collide(p1, p2):
     dy = p1.y - p2.y        
     distance = math.hypot(dx, dy)
 
+    tangent = math.atan2(dy, dx)
+
+    p1.angle = 2 * tangent - p1.angle
+    p2.angle = 2 * tangent - p2.angle
+
+    (p1.speed, p2.speed) = (p2.speed, p1.speed)
+
+    p1.speed *= elasticity
+    p2.speed *= elasticity
+
     if distance < p1.size + p2.size:
         print ('Bang!')
 

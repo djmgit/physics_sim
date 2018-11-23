@@ -89,7 +89,7 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Physics simulation')
 
 
-number_of_particles = 20
+number_of_particles = 3
 my_particles = []
 for n in range(number_of_particles):
     size = random.randint(10, 20)
@@ -97,7 +97,7 @@ for n in range(number_of_particles):
     x = random.randint(size, width-size)
     y = random.randint(size, height-size)
     particle = Particle(x, y, size, density * size ** 2)
-    particle.colour = (200 - density * 10, 200 - density * 10, 255)
+    particle.color = (200 - density * 10, 200 - density * 10, 255)
     particle.speed = random.random()
     particle.angle = random.uniform(0, math.pi*2)
     my_particles.append(particle)

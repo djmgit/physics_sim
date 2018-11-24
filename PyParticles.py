@@ -26,7 +26,11 @@ class Particle:
 
         #print (self.x)
 
-
+    def mouseMove(self, x, y):
+        dx = x - self.x
+        dy = y - self.y
+        self.angle = 0.5*math.pi + math.atan2(dy, dx)
+        self.speed = math.hypot(dx, dy) * 0.1
 
 def addVectors(angle1, length1, angle2, length2):
     x  = math.sin(angle1) * length1 + math.sin(angle2) * length2
@@ -35,12 +39,6 @@ def addVectors(angle1, length1, angle2, length2):
     length = math.hypot(x, y)
     angle = 0.5 * math.pi - math.atan2(y, x)
     return (angle, length)
-
-def findParticle(particles, x, y):
-    for p in particles:
-        if math.hypot(p.x-x, p.y-y) <= p.size:
-            return p
-    return None
 
 def collide(p1, p2):
     dx = p1.x - p2.x
@@ -113,4 +111,9 @@ class Environment:
             for particle2 in self.particles[i+1:]:
                 collide(particle, particle2)
 
+    def findParticle(self, x, y):
+        for p in self.particles:
+            if math.hypot(p.x-x, p.y-y) <= p.size:
+                return p
+        return None
 

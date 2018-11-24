@@ -13,6 +13,7 @@ class Particle:
         self.mass = mass
         self.mass_of_air = 0.2
         self.drag = (self.mass/(self.mass + self.mass_of_air)) ** self.size
+        self.elasticity = 0.9
 
     #def display(self):
         #pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
@@ -24,24 +25,6 @@ class Particle:
         self.speed *= self.drag
 
         #print (self.x)
-
-    def bounce(self):
-        if self.x > width - self.size:
-            self.x = 2 * (width - self.size) - self.x
-            self.angle = - self.angle
-            self.speed *= elasticity
-        elif self.x < self.size:
-            self.x = 2 * self.size - self.x
-            self.angle = - self.angle
-            self.speed *= elasticity
-        if self.y > height - self.size:
-            self.y = 2 * (height - self.size) - self.y
-            self.angle = math.pi - self.angle
-            self.speed *= elasticity
-        elif self.y < self.size:
-            self.y = 2 * self.size - self.y
-            self.angle = math.pi - self.angle
-            self.speed *= elasticity
 
 
 
@@ -69,6 +52,10 @@ def collide(p1, p2):
        total_mass = p1.mass + p2.mass
        (p1.angle, p1.speed) = addVectors(p1.angle, p1.speed*(p1.mass-p2.mass)/total_mass, angle, 2*p2.speed*p2.mass/total_mass)
        (p2.angle, p2.speed) = addVectors(p2.angle, p2.speed*(p2.mass-p1.mass)/total_mass, angle+math.pi, 2*p1.speed*p1.mass/total_mass)
+       
+
+
+       elasticity = p1.elasticity * p2.elasticity
        p1.speed *= elasticity
        p2.speed *= elasticity
 
@@ -99,5 +86,31 @@ class Environment:
         p.colour = kargs.get('colour', (0, 0, 255))
         p.drag = (p.mass/(p.mass + self.mass_of_air)) ** p.size
         self.particles.append(p)
+
+    def bounce(self, particle):
+        if particle.x > self.width - particle.size:
+            particle.x = 2 * (self.width - particle.size) - particle.x
+            particle.angle = - particle.angle
+            particle.speed *= self.elasticity
+        elif particle.x < particle.size:
+            particle.x = 2 * particle.size - particle.x
+            particle.angle = - particle.angle
+            particle.speed *= self.elasticity
+        if particle.y > self.height - particle.size:
+            particle.y = 2 * (self.height - particle.size) - particle.y
+            particle.angle = math.pi - particle.angle
+            particle.speed *= self.elasticity
+        elif particle.y < particle.size:
+            particle.y = 2 * particle.size - particle.y
+            particle.angle = math.pi - particle.angle
+            particle.speed *= self.elasticity
+
+
+    def update(self):
+        for i, particle in enumerate(self.particles):
+            particle.move()
+            self.bounce(particle)
+            for particle2 in self.particles[i+1:]:
+                collide(particle, particle2)
 
 

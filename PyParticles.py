@@ -1,3 +1,6 @@
+import random
+import math
+
 class Particle:
     def __init__(self, x, y, size, mass=1):
         self.x = x
@@ -8,10 +11,11 @@ class Particle:
         self.speed = 0.01
         self.angle = math.pi / 2
         self.mass = mass
-        self.drag = (self.mass/(self.mass + mass_of_air)) ** self.size
+        self.mass_of_air = 0.2
+        self.drag = (self.mass/(self.mass + self.mass_of_air)) ** self.size
 
-    def display(self):
-        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
+    #def display(self):
+        #pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.size)
 
     def move(self):
         self.x += math.sin(self.angle) * self.speed
@@ -73,3 +77,27 @@ def collide(p1, p2):
        p1.y -= math.cos(angle) * overlap
        p2.x -= math.sin(angle) * overlap
        p2.y += math.cos(angle) * overlap
+
+class Environment:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.particles = []
+        self.colour = (255,255,255)
+        self.mass_of_air = 0.2
+        self.elasticity = 0.75
+
+    def addParticles(self, n=1, **kargs):
+      for i in range(n):
+        size = kargs.get('size', random.randint(10, 20))
+        mass = kargs.get('mass', random.randint(100, 10000))
+        x = kargs.get('x', random.uniform(size, self.width-size))
+        y = kargs.get('y', random.uniform(size, self.height-size))
+        p = Particle(x, y, size, mass)
+        p.speed = kargs.get('speed', random.random())
+        p.angle = kargs.get('angle', random.uniform(0, math.pi*2))
+        p.colour = kargs.get('colour', (0, 0, 255))
+        p.drag = (p.mass/(p.mass + self.mass_of_air)) ** p.size
+        self.particles.append(p)
+
+

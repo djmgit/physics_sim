@@ -32,6 +32,9 @@ class Particle:
         self.angle = 0.5*math.pi + math.atan2(dy, dx)
         self.speed = math.hypot(dx, dy) * 0.1
 
+    def accelerate(self, vector):
+        (self.angle, self.speed) = addVectors(self.angle, self.speed, vector[0], vector[1])
+
 def addVectors(angle1, length1, angle2, length2):
     x  = math.sin(angle1) * length1 + math.sin(angle2) * length2
     y  = math.cos(angle1) * length1 + math.cos(angle2) * length2
@@ -71,6 +74,7 @@ class Environment:
         self.colour = (255,255,255)
         self.mass_of_air = 0.2
         self.elasticity = 0.75
+        self.acceleration = (math.pi, 0.002)
 
     def addParticles(self, n=1, **kargs):
       for i in range(n):

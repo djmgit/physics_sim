@@ -52,6 +52,7 @@ def collide(p1, p2):
     distance = math.hypot(dx, dy)
 
     if distance < p1.size + p2.size:
+       print ("bang")
        angle = math.atan2(dy, dx) + 0.5 * math.pi
        total_mass = p1.mass + p2.mass
        (p1.angle, p1.speed) = addVectors(p1.angle, p1.speed*(p1.mass-p2.mass)/total_mass, angle, 2*p2.speed*p2.mass/total_mass)
@@ -99,6 +100,7 @@ class Environment:
                 self.particle_functions2.append(f)
             else:
                 print ("No such function: %s" % func)
+        print (self.particle_functions2)
 
     def addParticles(self, n=1, **kargs):
       for i in range(n):

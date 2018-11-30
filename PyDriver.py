@@ -6,7 +6,7 @@ pygame.display.set_caption('Tutorial 10')
 screen = pygame.display.set_mode((width, height))
 
 env = PyParticles.Environment(width, height)
-env.addFunctions(['move', 'drag', 'bounce'])
+env.addFunctions(['move', 'drag', 'bounce', 'collide'])
 env.acceleration = (math.pi, 0.002)
 env.addParticles(5)
 

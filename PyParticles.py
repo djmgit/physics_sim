@@ -78,22 +78,27 @@ class Environment:
         self.mass_of_air = 0.2
         self.elasticity = 0.75
         self.acceleration = (math.pi, 0.002)
-        self.particle_functions = []
+        self.particle_functions1 = []
+        self.particle_functions2 = []
         self.function_dict = {
-            'move': lambda p: p.move(),
-            'drag': lambda p: p.experienceDrag(),
-            'bounce': lambda p: self.bounce(p),
-            'accelerate': lambda p: p.accelerate(self.acceleration)
+            'move': (1, lambda p: p.move()),
+            'drag': (1, lambda p: p.experienceDrag()),
+            'bounce': (1, lambda p: self.bounce(p)),
+            'accelerate': (1, lambda p: p.accelerate(self.acceleration)),
+            'collide': (2, lambda p1, p2: collide(p1, p2))
         }
 
 
 
     def addFunctions(self, function_list):
-        for f in function_list:
-            if f in self.function_dict:
-                self.particle_functions.append(self.function_dict[f])
+        for func in function_list:
+            (n, f) = self.function_dict.get(func, (-1, None))
+            if n == 1:
+                self.particle_functions1.append(f)
+            elif n == 2:
+                self.particle_functions2.append(f)
             else:
-                print ("No such function: %s" % f)
+                print ("No such function: %s" % func)
 
     def addParticles(self, n=1, **kargs):
       for i in range(n):
@@ -129,10 +134,11 @@ class Environment:
 
     def update(self):
         for i, particle in enumerate(self.particles):
-            for f in self.particle_functions:
+            for f in self.particle_functions1:
                 f(particle)
-            for particle2 in self.particles[i+1:]:
-                collide(particle, particle2)
+        for particle2 in self.particles[i+1:]:
+            for f in self.particle_functions2:
+                f(particle, particle2)
 
     def findParticle(self, x, y):
         for p in self.particles:

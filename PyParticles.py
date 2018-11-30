@@ -22,9 +22,12 @@ class Particle:
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed
         #(self.angle, self.speed) = addVectors(self.angle, self.speed, gravity[0], gravity[1])
-        self.speed *= self.drag
+        #self.speed *= self.drag
 
         #print (self.x)
+
+    def experienceDrag(self):
+        self.speed *= self.drag
 
     def mouseMove(self, x, y):
         dx = x - self.x
@@ -75,6 +78,22 @@ class Environment:
         self.mass_of_air = 0.2
         self.elasticity = 0.75
         self.acceleration = (math.pi, 0.002)
+        self.particle_functions = []
+        self.function_dict = {
+            'move': lambda p: p.move(),
+            'drag': lambda p: p.experienceDrag(),
+            'bounce': lambda p: self.bounce(p),
+            'accelerate': lambda p: p.accelerate(self.acceleration)
+        }
+
+
+
+    def addFunctions(self, function_list):
+        for f in function_list:
+            if f in self.function_dict:
+                self.particle_functions.append(self.function_dict[f])
+            else:
+                print ("No such function: %s" % f)
 
     def addParticles(self, n=1, **kargs):
       for i in range(n):
@@ -110,8 +129,8 @@ class Environment:
 
     def update(self):
         for i, particle in enumerate(self.particles):
-            particle.move()
-            self.bounce(particle)
+            for f in self.particle_functions:
+                f(particle)
             for particle2 in self.particles[i+1:]:
                 collide(particle, particle2)
 
